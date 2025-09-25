@@ -1,4 +1,13 @@
-# Welcome to your Expo app 👋
+# Batch SMS 📱
+
+### Text Messaging tool
+
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+
+Reads names and associated phone numbers from a user chosen csv file, then lets the user send whatever text message to all of them by calling the phones default text messaging app.
+
+
+🏥
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
