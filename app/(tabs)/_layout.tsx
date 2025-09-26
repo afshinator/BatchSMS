@@ -27,6 +27,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="pickCsv"
+        options={{
+          title: "Pick CSV file",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="doc.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
