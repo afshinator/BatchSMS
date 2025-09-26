@@ -1,18 +1,45 @@
-import { Image } from "expo-image";
-import { StyleSheet } from "react-native";
-
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { AnimatedStringWave } from "@/components/ui/AnimatedStringWave";
 import { useStateMgr } from "@/hooks/use-state-mgr";
+import {
+  getAllAsyncStoreItems,
+  PHONE_TYPE_PREF,
+  setItemInAsyncStorage,
+} from "@/utils/asyncStoreUtils";
+import { Image } from "expo-image";
 import { Link } from "expo-router";
+import { useEffect } from "react";
+import { StyleSheet } from "react-native";
+
+import { DEFAULT_PHONE_TYPE_PREF } from "@/constants/misc";
 
 const NOT_DONE = "⏳";
 const DONE = "✅";
 
 export default function HomeScreen() {
-  const { pickedDocument, documentContents } = useStateMgr();
+  const { pickedDocument, documentContents, phoneTypePref, setPhoneTypePref } =
+    useStateMgr();
+
+  useEffect(() => {
+    const onStartup = async () => {
+      const storageContents = await getAllAsyncStoreItems();
+
+      if (!storageContents || !storageContents[PHONE_TYPE_PREF]) {
+        console.log(`${PHONE_TYPE_PREF} not found in async storage, setting it.`);
+        setItemInAsyncStorage(PHONE_TYPE_PREF, DEFAULT_PHONE_TYPE_PREF);
+        setPhoneTypePref(DEFAULT_PHONE_TYPE_PREF);
+      } else {
+        console.log(
+          `${PHONE_TYPE_PREF} FOUND in async storage`,
+          storageContents[PHONE_TYPE_PREF]
+        );
+      }
+    };
+
+    onStartup();
+  }, []);
 
   return (
     <ParallaxScrollView

@@ -12,14 +12,20 @@ type CsvFileAsset = DocumentPicker.DocumentPickerAsset & {
 interface State {
   pickedDocument: CsvFileAsset | null;
   documentContents: [] | null;
+  phoneTypePref: 'mobile' | 'priority' | null;
+
   setPickedDocument: (document: CsvFileAsset | null) => void;
   setDocumentContents: (contents: [] | null) => void;
+  setPhoneTypePref: (pref: 'mobile' | 'priority' | null) => void;
 }
 
 // Create the Zustand store
 export const useStateMgr = create<State>((set) => ({
   pickedDocument: null,
   documentContents: null,
+  phoneTypePref: null,
+
   setPickedDocument: (document) => set({ pickedDocument: document }),
   setDocumentContents: (contents) => set({ documentContents: contents }),
+  setPhoneTypePref: (pref) => set({ phoneTypePref: pref }),
 }));
