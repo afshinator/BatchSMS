@@ -20,6 +20,7 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'gearshape.fill': 'settings',
   'doc.fill': 'description',
+  'person.3': 'group',
 } as IconMapping;
 
 /**

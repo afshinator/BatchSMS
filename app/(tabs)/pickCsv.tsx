@@ -7,6 +7,7 @@ import { Fonts } from "@/constants/theme";
 import { useStateMgr } from "@/hooks/use-state-mgr";
 import { readAndParseCSV } from "@/utils/csvParser";
 import * as DocumentPicker from "expo-document-picker";
+import { Link } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
@@ -105,11 +106,16 @@ export default function PickCsvScreen() {
         <Text style={styles.buttonText}>{buttonPrompt}</Text>
       </TouchableOpacity>
       {documentContents && (
-        <ThemedView>
+        <ThemedView style={styles.postParseContents}>
           <ThemedText>
             File successfully parsed - {documentContents.length} rows
           </ThemedText>
           <CsvDisplayTable data={documentContents} />
+          <Link href="/pickRecipients">
+            <ThemedText type="link">
+              👉  CLICK here to go pick who to send to...
+            </ThemedText>
+          </Link>
         </ThemedView>
       )}
     </ParallaxScrollView>
@@ -144,4 +150,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
   },
+  postParseContents: {
+    gap: 16
+  }
 });

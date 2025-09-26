@@ -36,6 +36,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="pickRecipients"
+        options={{
+          title: "Pick Recipients",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="person.3" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",

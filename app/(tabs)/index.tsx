@@ -8,13 +8,11 @@ import { AnimatedStringWave } from "@/components/ui/AnimatedStringWave";
 import { useStateMgr } from "@/hooks/use-state-mgr";
 import { Link } from "expo-router";
 
-
-const NOT_DONE = '⏳'
-const DONE = '✅'
+const NOT_DONE = "⏳";
+const DONE = "✅";
 
 export default function HomeScreen() {
-  const { pickedDocument, documentContents, } = useStateMgr();
-
+  const { pickedDocument, documentContents } = useStateMgr();
 
   return (
     <ParallaxScrollView
@@ -42,10 +40,23 @@ export default function HomeScreen() {
 
       <ThemedView style={styles.stepContainer}>
         <Link href="/pickCsv">
-          <ThemedText type="subtitle">Step 1: Pick CSV file {pickedDocument ? DONE : NOT_DONE}</ThemedText>
+          <ThemedText type="subtitle">
+            Step 1: Pick CSV file {pickedDocument ? DONE : NOT_DONE}
+          </ThemedText>
         </Link>
         <ThemedText>
           Browse files on this device and select CSV file.
+        </ThemedText>
+      </ThemedView>
+
+      <ThemedView style={styles.stepContainer}>
+        <Link href="/pickCsv">
+          <ThemedText type="subtitle">
+            Step 2: Pick Recipeints {pickedDocument ? DONE : NOT_DONE}
+          </ThemedText>
+        </Link>
+        <ThemedText>
+          Select all the people from the file you want to send to.
         </ThemedText>
       </ThemedView>
 
