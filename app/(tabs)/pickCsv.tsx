@@ -105,11 +105,13 @@ export default function PickCsvScreen() {
         <Text style={styles.buttonText}>{buttonPrompt}</Text>
       </TouchableOpacity>
       {documentContents && (
-        <ThemedText>
-          File successfully parsed with {documentContents.length} rows
-        </ThemedText>
+        <ThemedView>
+          <ThemedText>
+            File successfully parsed - {documentContents.length} rows
+          </ThemedText>
+          <CsvDisplayTable data={documentContents} />
+        </ThemedView>
       )}
-      {documentContents && <CsvDisplayTable data={documentContents} />}
     </ParallaxScrollView>
   );
 }

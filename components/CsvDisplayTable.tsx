@@ -4,9 +4,9 @@ import { ScrollView, StyleSheet, View } from "react-native";
 // A small type for the parsed data, assuming the keys are standardized
 type CsvRow = {
   "First Name": string;
-  "Mobile phone number": string;
-  "Priority phone number": string;
-  "File name": string;
+  "Mobile Phone": string;
+  "Priority Phone": string;
+  "File Name": string;
 };
 
 // Props for the component
@@ -19,7 +19,7 @@ export const CsvDisplayTable: React.FC<CsvDisplayTableProps> = ({ data }) => {
   if (!data || data.length === 0) {
     return null;
   }
-  console.log("data .....", data);
+
   return (
     <View style={styles.container}>
       {/* Table Header */}
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
-    marginTop: 16,
     overflow: "hidden", // Ensures content stays within the border
   },
   headerRow: {
@@ -78,8 +77,10 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: "bold",
-    flex: 1, // Distribute columns evenly
-    textAlign: "center",
+    fontSize: 12,
+    lineHeight: 12,
+    flex: 1, 
+    textAlign: "left",
   },
   row: {
     flexDirection: "row",
@@ -94,6 +95,7 @@ const styles = StyleSheet.create({
   cell: {
     flex: 1,
     textAlign: "left",
+    lineHeight: 8,
   },
   firstNameColumn: {
     flex: 1.2, // Make this column slightly wider to prevent width variation
