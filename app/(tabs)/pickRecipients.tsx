@@ -101,11 +101,13 @@ export default function PickRecipients() {
         </ThemedText>
       )}
 
-      <RecipientSelector
-        documentContents={documentContents}
-        phoneTypePref={phoneTypePref}
-        onFinalize={() => {}}
-      ></RecipientSelector>
+      {pickedDocument && (
+        <RecipientSelector
+          documentContents={documentContents}
+          phoneTypePref={phoneTypePref}
+          onFinalize={() => {}}
+        />
+      )}
     </ParallaxScrollView>
   );
 }
