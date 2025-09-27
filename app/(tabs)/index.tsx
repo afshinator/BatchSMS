@@ -24,6 +24,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const onStartup = async () => {
+      console.log('--> STARTUP AsyncStore CHECK RUNNING ')
       const storageContents = await getAllAsyncStoreItems();
 
       if (!storageContents || !storageContents[PHONE_TYPE_PREF]) {

@@ -29,3 +29,7 @@ export const useStateMgr = create<State>((set) => ({
   setDocumentContents: (contents) => set({ documentContents: contents }),
   setPhoneTypePref: (pref) => set({ phoneTypePref: pref }),
 }));
+
+
+
+
