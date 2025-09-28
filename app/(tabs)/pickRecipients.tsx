@@ -7,7 +7,7 @@ import { useStateMgr } from "@/hooks/use-state-mgr";
 
 import { Link } from "expo-router";
 import { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import {
   getItemFromAsyncStorage,
@@ -21,10 +21,10 @@ export default function PickRecipients() {
     pickedDocument,
     documentContents,
     phoneTypePref,
+    pickedRecipients,
 
-    setPickedDocument,
-    setDocumentContents,
     setPhoneTypePref,
+    setPickedRecipients,
   } = useStateMgr();
 
   useEffect(() => {
@@ -35,6 +35,7 @@ export default function PickRecipients() {
         console.log(
           `${PHONE_TYPE_PREF} not found in async storage, setting it.`
         );
+        // Index page already does this; this screen can't be naviagted to on mobile.
         // setItemInAsyncStorage(PHONE_TYPE_PREF, DEFAULT_PHONE_TYPE_PREF);
         // setPhoneTypePref(DEFAULT_PHONE_TYPE_PREF);
       } else {
@@ -45,6 +46,11 @@ export default function PickRecipients() {
 
     onStartup();
   }, []);
+
+  const handleResetPicks = () => {
+    setPickedRecipients([]);
+
+  }
 
   const Header = () => {
     return (
@@ -76,8 +82,6 @@ export default function PickRecipients() {
     );
   };
 
-  console.log("documentContests ", documentContents);
-
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
@@ -108,6 +112,34 @@ export default function PickRecipients() {
           onFinalize={() => {}}
         />
       )}
+      {pickedRecipients?.length && (
+        <ThemedView>
+          <ThemedView style={styles.finishedPickingMsg}>
+            <ThemedText type="defaultSemiBold" style={{ marginBottom: 16 }}>
+              {pickedRecipients.length} of{" "}
+              {documentContents ? documentContents.length : 0} selected.
+            </ThemedText>
+            <TouchableOpacity style={styles.resetButton} onPress={()=>handleResetPicks()}>
+              <ThemedText  >Reset Picks!</ThemedText>
+            </TouchableOpacity>
+          </ThemedView>
+
+          {pickedRecipients.map((row, i) => {
+            return (
+              <ThemedText key={i}>
+                {row["name"]} : {row["phone"]}
+              </ThemedText>
+            );
+          })}
+          <ThemedText style={{ marginTop: 16 }}>
+            Now go to{" "}
+            <Link href="/">
+              <ThemedText type="link">Pick Message</ThemedText>
+            </Link>{" "}
+            tab to select what message to send to these people.
+          </ThemedText>
+        </ThemedView>
+      )}
     </ParallaxScrollView>
   );
 }
@@ -122,5 +154,16 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     gap: 8,
+  },
+  finishedPickingMsg: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  resetButton: {
+    backgroundColor: "#B98110",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
   },
 });

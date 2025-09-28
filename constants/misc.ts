@@ -1,1 +1,1 @@
-export const DEFAULT_PHONE_TYPE_PREF = 'priority'
+export const DEFAULT_PHONE_TYPE_PREF = 'mobile'

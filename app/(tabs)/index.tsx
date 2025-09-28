@@ -24,7 +24,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const onStartup = async () => {
-      console.log('--> STARTUP AsyncStore CHECK RUNNING ')
+      console.log('HOME: STARTUP AsyncStore CHECK RUNNING ')
       const storageContents = await getAllAsyncStoreItems();
 
       if (!storageContents || !storageContents[PHONE_TYPE_PREF]) {
@@ -33,7 +33,7 @@ export default function HomeScreen() {
         setPhoneTypePref(DEFAULT_PHONE_TYPE_PREF);
       } else {
         console.log(
-          `${PHONE_TYPE_PREF} FOUND in async storage`,
+          `HOME: ${PHONE_TYPE_PREF} found in async storage: `,
           storageContents[PHONE_TYPE_PREF]
         );
       }

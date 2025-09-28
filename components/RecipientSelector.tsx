@@ -1,3 +1,4 @@
+import { useStateMgr } from "@/hooks/use-state-mgr";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./themed-text";
@@ -14,7 +15,7 @@ interface RecipientSelectorProps {
  */
 export const RecipientSelector = ({
   documentContents,
-  phoneTypePref,
+  phoneTypePref, // must have a value because home page will set it if it doesnt already exists in asyncstore
   onFinalize,
 }: RecipientSelectorProps) => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -24,9 +25,15 @@ export const RecipientSelector = ({
   const [hasFinishedPicking, setHasFinishedPicking] = useState(false);
   const [finishedList, setFinishedList] = useState([{}]);
 
+  const { pickedRecipients, setPickedRecipients } = useStateMgr();
+
+  console.log("pickedRecipients ", pickedRecipients);
+
   // Initialize selectedRows and phone selections when documentContents changes
   useEffect(() => {
     setSelectedRows(new Set());
+    setHasFinishedPicking(false);
+
     if (documentContents) {
       const initialPhoneSelections = new Map();
       documentContents.forEach((row, index) => {
@@ -35,16 +42,16 @@ export const RecipientSelector = ({
         const hasPriorityPhone =
           row["Priority Phone"] && row["Priority Phone"].trim() !== "";
 
-        // If only mobile phone exists, select mobile; otherwise default to priority
-        if (hasMobilePhone && !hasPriorityPhone) {
-          initialPhoneSelections.set(index, "mobile");
+        if (hasMobilePhone && hasPriorityPhone) {
+          initialPhoneSelections.set(index, phoneTypePref);
         } else {
-          initialPhoneSelections.set(index, "priority"); // Default to priority phone
+          if (!hasMobilePhone) initialPhoneSelections.set(index, "priority");
+          if (!hasPriorityPhone) initialPhoneSelections.set(index, "mobile");
         }
       });
       setPhoneSelections(initialPhoneSelections);
     }
-  }, [documentContents]);
+  }, [documentContents, pickedRecipients]);
 
   const handleSelectAll = () => {
     if (documentContents) {
@@ -69,7 +76,7 @@ export const RecipientSelector = ({
 
   const togglePhoneSelection = (index: number) => {
     const newPhoneSelections = new Map(phoneSelections);
-    const currentSelection = newPhoneSelections.get(index) || "priority";
+    const currentSelection = newPhoneSelections.get(index);
     newPhoneSelections.set(
       index,
       currentSelection === "mobile" ? "priority" : "mobile"
@@ -82,18 +89,19 @@ export const RecipientSelector = ({
 
     const result = Array.from(selectedRows).map((index) => {
       const row = documentContents[index];
-      const phoneType = phoneSelections.get(index) || "priority";
+      const phoneType = phoneSelections.get(index);
       const phoneNumber =
         phoneType === "mobile" ? row["Mobile Phone"] : row["Priority Phone"];
 
       return {
         name: row["First Name"],
-        phoneNumber: phoneNumber,
+        phone: phoneNumber,
+        phoneType,
       };
     });
 
     setHasFinishedPicking(true);
-    setFinishedList(result);
+    setPickedRecipients(result);
     console.log("Selected recipients:", result);
   };
 
@@ -129,7 +137,7 @@ export const RecipientSelector = ({
           const hasPriorityPhone =
             row["Priority Phone"] && row["Priority Phone"].trim() !== "";
           const isSelected = selectedRows.has(index);
-          const selectedPhoneType = phoneSelections.get(index) || "priority";
+          const selectedPhoneType = phoneSelections.get(index) || phoneTypePref;
 
           return (
             <View style={styles.row} key={index}>
@@ -189,10 +197,11 @@ export const RecipientSelector = ({
         <TouchableOpacity
           style={[
             styles.finishButton,
-            selectedRows.size === 0 && styles.finishButtonDisabled,
+            (selectedRows.size === 0 || hasFinishedPicking) &&
+              styles.finishButtonDisabled,
           ]}
           onPress={handleFinishedPicking}
-          disabled={selectedRows.size === 0}
+          disabled={selectedRows.size === 0 || hasFinishedPicking}
         >
           <ThemedText
             style={[
@@ -200,19 +209,10 @@ export const RecipientSelector = ({
               selectedRows.size === 0 && styles.finishButtonTextDisabled,
             ]}
           >
-            Finished Picking Recipients
+            Finalize Picking Recipients
           </ThemedText>
         </TouchableOpacity>
       </View>
-
-      {hasFinishedPicking && (
-        <View>
-          <ThemedText type="defaultSemiBold">{finishedList.length} of {documentContents.length} selected.</ThemedText>
-          <ThemedText> 
-            Now go to Pick Message tab to select what message to send to these people.
-          </ThemedText>
-        </View>
-      )}
     </View>
   );
 };
