@@ -25,7 +25,7 @@ const MSG_KEY_3 = "message3";
 const SELECTED_MSG_KEY = "selectedMessage";
 
 export default function PickMessage() {
-  const { pickedDocument, pickedRecipients,  } =
+  const { pickedDocument, pickedRecipients } =
     useStateMgr();
 
   const [message1, setMessage1] = useState("");

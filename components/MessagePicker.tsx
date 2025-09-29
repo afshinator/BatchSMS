@@ -206,6 +206,11 @@ export default function MessagePicker({
             </TouchableOpacity>
           </ThemedView>
 
+          <ThemedText type="small" style={{ marginBottom: 8, fontWeight: 'bold'}}>
+            Use [name] in the text to indicate where to insert name in the
+            message when sending.
+          </ThemedText>
+
           {/* Edit Area */}
           <ThemedView
             style={[styles.editContainer, { backgroundColor: "transparent" }]}
