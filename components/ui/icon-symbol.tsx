@@ -21,6 +21,7 @@ const MAPPING = {
   'gearshape.fill': 'settings',
   'doc.fill': 'description',
   'person.3': 'group',
+  'message' : 'chat',
 } as IconMapping;
 
 /**

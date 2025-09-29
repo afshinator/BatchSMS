@@ -44,6 +44,17 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="pickMessage"
+        options={{
+          title: "Pick Message",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="message" color={color} />
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="settings"
         options={{
