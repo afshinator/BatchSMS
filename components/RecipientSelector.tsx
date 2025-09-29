@@ -1,57 +1,51 @@
 import { useStateMgr } from "@/hooks/use-state-mgr";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./themed-text";
 
 interface RecipientSelectorProps {
   documentContents: [] | null;
-  phoneTypePref?: "mobile" | "priority" | null;
+  phoneTypePref: "mobile" | "priority" ;
   onFinalize: () => void;
+  // The key prop is passed from the parent to force a reset (re-mount)
+  key: number; 
 }
 
 /**
- * RecipientSelector component with full interaction logic, handling phone selection,
- * row selection, and final output generation.
+ * RecipientSelector component with full interaction logic.
  */
 export const RecipientSelector = ({
   documentContents,
-  phoneTypePref, // must have a value because home page will set it if it doesnt already exists in asyncstore
+  phoneTypePref,
   onFinalize,
 }: RecipientSelectorProps) => {
+  // Initial state setup is now the source of truth for resets
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [phoneSelections, setPhoneSelections] = useState<
-    Map<number, "mobile" | "priority">
-  >(new Map());
   const [hasFinishedPicking, setHasFinishedPicking] = useState(false);
-  const [finishedList, setFinishedList] = useState([{}]);
+  
+  // Initial phone selection logic is performed immediately upon mount/re-mount
+  const initialPhoneSelections = new Map<number, "mobile" | "priority">();
+  if (documentContents) {
+    documentContents.forEach((row, index) => {
+      const hasMobilePhone =
+        row["Mobile Phone"] && row["Mobile Phone"].trim() !== "";
+      const hasPriorityPhone =
+        row["Priority Phone"] && row["Priority Phone"].trim() !== "";
 
-  const { pickedRecipients, setPickedRecipients } = useStateMgr();
+      if (hasMobilePhone && hasPriorityPhone) {
+        initialPhoneSelections.set(index, phoneTypePref as "mobile" | "priority");
+      } else {
+        if (!hasMobilePhone) initialPhoneSelections.set(index, "priority");
+        if (!hasPriorityPhone) initialPhoneSelections.set(index, "mobile");
+      }
+    });
+  }
 
-  console.log("pickedRecipients ", pickedRecipients);
+  const [phoneSelections, setPhoneSelections] = useState(initialPhoneSelections);
 
-  // Initialize selectedRows and phone selections when documentContents changes
-  useEffect(() => {
-    setSelectedRows(new Set());
-    setHasFinishedPicking(false);
+  // Removed: const [finishedList, setFinishedList] = useState([{}]);
 
-    if (documentContents) {
-      const initialPhoneSelections = new Map();
-      documentContents.forEach((row, index) => {
-        const hasMobilePhone =
-          row["Mobile Phone"] && row["Mobile Phone"].trim() !== "";
-        const hasPriorityPhone =
-          row["Priority Phone"] && row["Priority Phone"].trim() !== "";
-
-        if (hasMobilePhone && hasPriorityPhone) {
-          initialPhoneSelections.set(index, phoneTypePref);
-        } else {
-          if (!hasMobilePhone) initialPhoneSelections.set(index, "priority");
-          if (!hasPriorityPhone) initialPhoneSelections.set(index, "mobile");
-        }
-      });
-      setPhoneSelections(initialPhoneSelections);
-    }
-  }, [documentContents, pickedRecipients]);
+  const { setPickedRecipients } = useStateMgr();
 
   const handleSelectAll = () => {
     if (documentContents) {
@@ -76,7 +70,7 @@ export const RecipientSelector = ({
 
   const togglePhoneSelection = (index: number) => {
     const newPhoneSelections = new Map(phoneSelections);
-    const currentSelection = newPhoneSelections.get(index);
+    const currentSelection = newPhoneSelections.get(index) || phoneTypePref;
     newPhoneSelections.set(
       index,
       currentSelection === "mobile" ? "priority" : "mobile"
@@ -89,7 +83,7 @@ export const RecipientSelector = ({
 
     const result = Array.from(selectedRows).map((index) => {
       const row = documentContents[index];
-      const phoneType = phoneSelections.get(index);
+      const phoneType = phoneSelections.get(index) || phoneTypePref;
       const phoneNumber =
         phoneType === "mobile" ? row["Mobile Phone"] : row["Priority Phone"];
 
@@ -103,6 +97,9 @@ export const RecipientSelector = ({
     setHasFinishedPicking(true);
     setPickedRecipients(result);
     console.log("Selected recipients:", result);
+    // onFinalize is called here if the parent needs notification, 
+    // but it's not strictly necessary for the reset logic.
+    onFinalize(); 
   };
 
   return (
@@ -117,9 +114,9 @@ export const RecipientSelector = ({
         </TouchableOpacity>
       </View>
 
+      {/* ... List Header and Row Rendering (no changes needed here) ... */}
       <View style={styles.listHeader}>
         <View style={styles.checkboxColumn}></View>
-
         <ThemedText style={[styles.headerCell, styles.phoneColumn]}>
           Mobile Phone
         </ThemedText>
@@ -191,6 +188,7 @@ export const RecipientSelector = ({
             </View>
           );
         })}
+
 
       {/* Finished Picking Recipients button */}
       <View style={styles.finishButtonContainer}>

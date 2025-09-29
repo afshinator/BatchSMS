@@ -6,7 +6,7 @@ import { Fonts } from "@/constants/theme";
 import { useStateMgr } from "@/hooks/use-state-mgr";
 
 import { Link } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react"; // ADDED useState
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import {
@@ -15,6 +15,7 @@ import {
 } from "@/utils/asyncStoreUtils";
 
 import { RecipientSelector } from "@/components/RecipientSelector";
+import { DEFAULT_PHONE_TYPE_PREF } from "@/constants/misc";
 
 export default function PickRecipients() {
   const {
@@ -26,6 +27,8 @@ export default function PickRecipients() {
     setPhoneTypePref,
     setPickedRecipients,
   } = useStateMgr();
+
+  const [resetKey, setResetKey] = useState(0); 
 
   useEffect(() => {
     const onStartup = async () => {
@@ -49,7 +52,8 @@ export default function PickRecipients() {
 
   const handleResetPicks = () => {
     setPickedRecipients([]);
-
+    // Increment the key to force the RecipientSelector component to re-mount and reset its local state
+    setResetKey(prevKey => prevKey + 1);
   }
 
   const Header = () => {
@@ -107,27 +111,28 @@ export default function PickRecipients() {
 
       {pickedDocument && (
         <RecipientSelector
+          key={resetKey} 
           documentContents={documentContents}
-          phoneTypePref={phoneTypePref}
+          phoneTypePref={phoneTypePref ?? DEFAULT_PHONE_TYPE_PREF}
           onFinalize={() => {}}
         />
       )}
       {pickedRecipients?.length && (
         <ThemedView>
-          <ThemedView style={styles.finishedPickingMsg}>
+          <View style={styles.finishedPickingMsg}>
             <ThemedText type="defaultSemiBold" style={{ marginBottom: 16 }}>
               {pickedRecipients.length} of{" "}
               {documentContents ? documentContents.length : 0} selected.
             </ThemedText>
-            <TouchableOpacity style={styles.resetButton} onPress={()=>handleResetPicks()}>
-              <ThemedText  >Reset Picks!</ThemedText>
+            <TouchableOpacity style={styles.resetButton} onPress={handleResetPicks}>
+              <ThemedText>Reset Picks!</ThemedText>
             </TouchableOpacity>
-          </ThemedView>
+          </View>
 
           {pickedRecipients.map((row, i) => {
             return (
               <ThemedText key={i}>
-                {row["name"]} : {row["phone"]}
+                {row["name"]} : {row["phone"]}  {row['phoneType']}
               </ThemedText>
             );
           })}
