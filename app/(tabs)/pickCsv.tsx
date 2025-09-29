@@ -111,11 +111,13 @@ export default function PickCsvScreen() {
             File successfully parsed - {documentContents.length} rows
           </ThemedText>
           <CsvDisplayTable data={documentContents} />
-          <Link href="/pickRecipients">
-            <ThemedText type="link">
-              👉  CLICK here to go pick who to send to...
-            </ThemedText>
-          </Link>
+          <ThemedView style={{ flexDirection: "row" }}>
+            <ThemedText> 👉 Now go to </ThemedText>
+            <Link href="/pickRecipients">
+              <ThemedText type="link">Pick Recipients</ThemedText>
+            </Link>
+            <ThemedText> to choose who does and doesn't get the text message.</ThemedText>
+          </ThemedView>
         </ThemedView>
       )}
     </ParallaxScrollView>
@@ -151,6 +153,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   postParseContents: {
-    gap: 16
-  }
+    gap: 16,
+  },
 });

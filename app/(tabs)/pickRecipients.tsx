@@ -137,7 +137,7 @@ export default function PickRecipients() {
             );
           })}
           <ThemedText style={{ marginTop: 16 }}>
-            Now go to{" "}
+            👉 Now go to{" "}
             <Link href="/">
               <ThemedText type="link">Pick Message</ThemedText>
             </Link>{" "}
