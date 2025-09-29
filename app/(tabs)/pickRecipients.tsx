@@ -138,7 +138,7 @@ export default function PickRecipients() {
           })}
           <ThemedText style={{ marginTop: 16 }}>
             👉 Now go to{" "}
-            <Link href="/">
+            <Link href="/pickMessage">
               <ThemedText type="link">Pick Message</ThemedText>
             </Link>{" "}
             tab to select what message to send to these people.

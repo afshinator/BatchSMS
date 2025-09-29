@@ -5,10 +5,10 @@ import { ThemedText } from "./themed-text";
 
 interface RecipientSelectorProps {
   documentContents: [] | null;
-  phoneTypePref: "mobile" | "priority" ;
+  phoneTypePref: "mobile" | "priority";
   onFinalize: () => void;
   // The key prop is passed from the parent to force a reset (re-mount)
-  key: number; 
+  key: number;
 }
 
 /**
@@ -22,7 +22,7 @@ export const RecipientSelector = ({
   // Initial state setup is now the source of truth for resets
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [hasFinishedPicking, setHasFinishedPicking] = useState(false);
-  
+
   // Initial phone selection logic is performed immediately upon mount/re-mount
   const initialPhoneSelections = new Map<number, "mobile" | "priority">();
   if (documentContents) {
@@ -33,15 +33,24 @@ export const RecipientSelector = ({
         row["Priority Phone"] && row["Priority Phone"].trim() !== "";
 
       if (hasMobilePhone && hasPriorityPhone) {
-        initialPhoneSelections.set(index, phoneTypePref as "mobile" | "priority");
+        // Both phones exist - use the preference
+        initialPhoneSelections.set(index, phoneTypePref);
+      } else if (hasMobilePhone && !hasPriorityPhone) {
+        // Only mobile exists
+        initialPhoneSelections.set(index, "mobile");
+      } else if (!hasMobilePhone && hasPriorityPhone) {
+        // Only priority exists
+        initialPhoneSelections.set(index, "priority");
       } else {
-        if (!hasMobilePhone) initialPhoneSelections.set(index, "priority");
-        if (!hasPriorityPhone) initialPhoneSelections.set(index, "mobile");
+        // Neither exists - default to preference, but actually this row should've been filtered when parsing the csv
+        initialPhoneSelections.set(index, phoneTypePref);
       }
     });
   }
 
-  const [phoneSelections, setPhoneSelections] = useState(initialPhoneSelections);
+  const [phoneSelections, setPhoneSelections] = useState(
+    initialPhoneSelections
+  );
 
   // Removed: const [finishedList, setFinishedList] = useState([{}]);
 
@@ -97,9 +106,9 @@ export const RecipientSelector = ({
     setHasFinishedPicking(true);
     setPickedRecipients(result);
     console.log("Selected recipients:", result);
-    // onFinalize is called here if the parent needs notification, 
+    // onFinalize is called here if the parent needs notification,
     // but it's not strictly necessary for the reset logic.
-    onFinalize(); 
+    onFinalize();
   };
 
   return (
@@ -188,7 +197,6 @@ export const RecipientSelector = ({
             </View>
           );
         })}
-
 
       {/* Finished Picking Recipients button */}
       <View style={styles.finishButtonContainer}>
