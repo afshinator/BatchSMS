@@ -1,3 +1,5 @@
+// pickMessage.tsx
+
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -9,7 +11,7 @@ import { StyleSheet } from "react-native";
 
 
 
-export default function PickCsvScreen() {
+export default function PickMessage() {
   const {
     pickedDocument,
     documentContents,

@@ -13,11 +13,13 @@ interface State {
   documentContents: [] | null;
   phoneTypePref: "mobile" | "priority" | null;
   pickedRecipients: [] | null;
+  pickedMessage : string;
 
   setPickedDocument: (document: CsvFileAsset | null) => void;
   setDocumentContents: (contents: [] | null) => void;
   setPhoneTypePref: (pref: "mobile" | "priority" | null) => void;
   setPickedRecipients: (contents: [] | null) => void;
+  setPickedMessage: (msg: string) => void;
 }
 
 // Create the Zustand store
@@ -26,9 +28,11 @@ export const useStateMgr = create<State>((set) => ({
   documentContents: null,
   phoneTypePref: null,
   pickedRecipients: null,
+  pickedMessage: '',
 
   setPickedDocument: (document) => set({ pickedDocument: document }),
   setDocumentContents: (contents) => set({ documentContents: contents }),
   setPhoneTypePref: (pref) => set({ phoneTypePref: pref }),
   setPickedRecipients: (pickedList) => set({ pickedRecipients: pickedList }),
+  setPickedMessage: (msg) => set({ pickedMessage: msg }),
 }));

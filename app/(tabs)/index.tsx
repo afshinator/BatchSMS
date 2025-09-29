@@ -19,16 +19,18 @@ const NOT_DONE = "⏳";
 const DONE = "✅";
 
 export default function HomeScreen() {
-  const { pickedDocument, documentContents, phoneTypePref, setPhoneTypePref } =
+  const { pickedDocument, documentContents, pickedRecipients, setPhoneTypePref } =
     useStateMgr();
 
   useEffect(() => {
     const onStartup = async () => {
-      console.log('HOME: STARTUP AsyncStore CHECK RUNNING ')
+      console.log("HOME: STARTUP AsyncStore CHECK RUNNING ");
       const storageContents = await getAllAsyncStoreItems();
 
       if (!storageContents || !storageContents[PHONE_TYPE_PREF]) {
-        console.log(`${PHONE_TYPE_PREF} not found in async storage, setting it.`);
+        console.log(
+          `${PHONE_TYPE_PREF} not found in async storage, setting it.`
+        );
         setItemInAsyncStorage(PHONE_TYPE_PREF, DEFAULT_PHONE_TYPE_PREF);
         setPhoneTypePref(DEFAULT_PHONE_TYPE_PREF);
       } else {
@@ -80,11 +82,20 @@ export default function HomeScreen() {
       <ThemedView style={styles.stepContainer}>
         <Link href="/pickCsv">
           <ThemedText type="subtitle">
-            Step 2: Pick Recipeints {pickedDocument ? DONE : NOT_DONE}
+            Step 2: Pick Recipeints {pickedRecipients && pickedRecipients?.length > 0 ? DONE : NOT_DONE}
           </ThemedText>
         </Link>
         <ThemedText>
           Select all the people from the file you want to send to.
+        </ThemedText>
+      </ThemedView>
+
+      <ThemedView style={styles.stepContainer}>
+        <Link href="/pickMessage">
+          <ThemedText type="subtitle">Step 3: Pick Message</ThemedText>
+        </Link>
+        <ThemedText>
+          Create a message to send, or pick a saved message.
         </ThemedText>
       </ThemedView>
 
@@ -120,19 +131,7 @@ export default function HomeScreen() {
           {`Tap the Explore tab to learn more about what's included in this starter app.`}
         </ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">
-            npm run reset-project
-          </ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+
     </ParallaxScrollView>
   );
 }
