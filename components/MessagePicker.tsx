@@ -1,7 +1,8 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import React, { useState } from 'react';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { useStateMgr } from "@/hooks/use-state-mgr";
+import { useThemeColor } from "@/hooks/use-theme-color";
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -9,17 +10,17 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 
 interface MessagePickerProps {
   message1: string;
   message2: string;
   message3: string;
-  selectedMessage: '1' | '2' | '3';
+  selectedMessage: "1" | "2" | "3";
   onMessage1Change: (text: string) => void;
   onMessage2Change: (text: string) => void;
   onMessage3Change: (text: string) => void;
-  onSelectedMessageChange: (option: '1' | '2' | '3') => void;
+  onSelectedMessageChange: (option: "1" | "2" | "3") => void;
   onSave: () => void;
   onConfirmSelection: () => void;
 }
@@ -36,10 +37,21 @@ export default function MessagePicker({
   onSave,
   onConfirmSelection,
 }: MessagePickerProps) {
-  const backgroundColor = useThemeColor({ light: '#fff', dark: '#1c1c1e' }, 'background');
-  const borderColor = useThemeColor({ light: '#e0e0e0', dark: '#404040' }, 'text');
-  const textColor = useThemeColor({}, 'text');
-  const placeholderColor = useThemeColor({ light: '#999', dark: '#666' }, 'text');
+  const { setPickedMessage } = useStateMgr();
+
+  const backgroundColor = useThemeColor(
+    { light: "#fff", dark: "#1c1c1e" },
+    "background"
+  );
+  const borderColor = useThemeColor(
+    { light: "#e0e0e0", dark: "#404040" },
+    "text"
+  );
+  const textColor = useThemeColor({}, "text");
+  const placeholderColor = useThemeColor(
+    { light: "#999", dark: "#666" },
+    "text"
+  );
 
   // Track original values to detect changes - only set on mount
   const [originalMessage1, setOriginalMessage1] = useState(message1);
@@ -50,25 +62,35 @@ export default function MessagePicker({
   const [isPicked, setIsPicked] = useState(false);
 
   // Check if there are any unsaved changes
-  const hasChanges = 
+  const hasChanges =
     message1 !== originalMessage1 ||
     message2 !== originalMessage2 ||
     message3 !== originalMessage3;
 
   const getCurrentMessage = () => {
     switch (selectedMessage) {
-      case '1': return message1;
-      case '2': return message2;
-      case '3': return message3;
-      default: return '';
+      case "1":
+        return message1;
+      case "2":
+        return message2;
+      case "3":
+        return message3;
+      default:
+        return "";
     }
   };
 
   const handleMessageChange = (text: string) => {
     switch (selectedMessage) {
-      case '1': onMessage1Change(text); break;
-      case '2': onMessage2Change(text); break;
-      case '3': onMessage3Change(text); break;
+      case "1":
+        onMessage1Change(text);
+        break;
+      case "2":
+        onMessage2Change(text);
+        break;
+      case "3":
+        onMessage3Change(text);
+        break;
     }
   };
 
@@ -82,6 +104,9 @@ export default function MessagePicker({
 
   const handleConfirmSelection = async () => {
     await onConfirmSelection();
+    const msg = getCurrentMessage();
+    console.log("chosen message: ", msg);
+    setPickedMessage(msg);
     setIsPicked(true);
   };
 
@@ -89,24 +114,27 @@ export default function MessagePicker({
     setIsPicked(false);
   };
 
-  const renderMessageButton = (optionNumber: '1' | '2' | '3', label: string) => {
+  const renderMessageButton = (
+    optionNumber: "1" | "2" | "3",
+    label: string
+  ) => {
     const isSelected = selectedMessage === optionNumber;
-    
+
     return (
       <TouchableOpacity
         style={[
           styles.messageButton,
           {
-            backgroundColor: isSelected ? '#007AFF' : backgroundColor,
-            borderColor: isSelected ? '#007AFF' : borderColor,
-          }
+            backgroundColor: isSelected ? "#007AFF" : backgroundColor,
+            borderColor: isSelected ? "#007AFF" : borderColor,
+          },
         ]}
         onPress={() => onSelectedMessageChange(optionNumber)}
         activeOpacity={0.7}
       >
-        <ThemedText 
+        <ThemedText
           type="defaultSemiBold"
-          style={{ color: isSelected ? '#fff' : textColor }}
+          style={{ color: isSelected ? "#fff" : textColor }}
         >
           {label}
         </ThemedText>
@@ -116,60 +144,74 @@ export default function MessagePicker({
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
       keyboardVerticalOffset={100}
     >
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <ThemedView style={[styles.content, { backgroundColor: 'transparent' }]}>
+        <ThemedView
+          style={[styles.content, { backgroundColor: "transparent" }]}
+        >
           {/* Message Selection Buttons */}
-          <ThemedView style={[styles.buttonRow, { backgroundColor: 'transparent' }]}>
-            {renderMessageButton('1', '1')}
-            {renderMessageButton('2', '2')}
-            {renderMessageButton('3', '3')}
+          <ThemedView
+            style={[styles.buttonRow, { backgroundColor: "transparent" }]}
+          >
+            {renderMessageButton("1", "1")}
+            {renderMessageButton("2", "2")}
+            {renderMessageButton("3", "3")}
           </ThemedView>
 
           {/* Action Buttons */}
-          <ThemedView style={[styles.actionRow, { backgroundColor: 'transparent' }]}>
+          <ThemedView
+            style={[styles.actionRow, { backgroundColor: "transparent" }]}
+          >
             <TouchableOpacity
               style={[
-                styles.actionButton, 
+                styles.actionButton,
                 styles.saveButton,
-                (!hasChanges || isPicked) && styles.disabledButton
+                (!hasChanges || isPicked) && styles.disabledButton,
               ]}
               onPress={handleSave}
               activeOpacity={0.7}
               disabled={!hasChanges || isPicked}
             >
-              <ThemedText type="defaultSemiBold" style={styles.actionButtonText}>
+              <ThemedText
+                type="defaultSemiBold"
+                style={styles.actionButtonText}
+              >
                 Save Changes
               </ThemedText>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[
-                styles.actionButton, 
+                styles.actionButton,
                 styles.confirmButton,
-                isPicked && styles.disabledButton
+                isPicked && styles.disabledButton,
               ]}
               onPress={handleConfirmSelection}
               activeOpacity={0.7}
               disabled={isPicked}
             >
-              <ThemedText type="defaultSemiBold" style={styles.actionButtonText}>
+              <ThemedText
+                type="defaultSemiBold"
+                style={styles.actionButtonText}
+              >
                 Pick Message
               </ThemedText>
             </TouchableOpacity>
           </ThemedView>
 
           {/* Edit Area */}
-          <ThemedView style={[styles.editContainer, { backgroundColor: 'transparent' }]}>
+          <ThemedView
+            style={[styles.editContainer, { backgroundColor: "transparent" }]}
+          >
             <ThemedText type="defaultSemiBold" style={styles.editLabel}>
-              {isPicked ? 'Selected' : 'Editing'}: Message {selectedMessage}
+              {isPicked ? "Selected" : "Editing"}: Message {selectedMessage}
             </ThemedText>
             <TextInput
               style={[
@@ -178,7 +220,7 @@ export default function MessagePicker({
                   borderColor,
                   backgroundColor: isPicked ? borderColor : backgroundColor,
                   color: textColor,
-                }
+                },
               ]}
               value={getCurrentMessage()}
               onChangeText={handleMessageChange}
@@ -192,15 +234,25 @@ export default function MessagePicker({
 
           {/* Reset Pick Button - Only show when message is picked */}
           {isPicked && (
-            <TouchableOpacity
-              style={[styles.resetButton]}
-              onPress={handleResetPick}
-              activeOpacity={0.7}
+            <ThemedView
+              style={[
+                styles.resetButtonContainer,
+                { backgroundColor: "transparent" },
+              ]}
             >
-              <ThemedText type="defaultSemiBold" style={styles.resetButtonText}>
-                Reset Pick
-              </ThemedText>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.resetButton]}
+                onPress={handleResetPick}
+                activeOpacity={0.7}
+              >
+                <ThemedText
+                  type="defaultSemiBold"
+                  style={styles.resetButtonText}
+                >
+                  Reset Pick
+                </ThemedText>
+              </TouchableOpacity>
+            </ThemedView>
           )}
         </ThemedView>
       </ScrollView>
@@ -219,7 +271,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   buttonRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
     marginBottom: 16,
   },
@@ -229,11 +281,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 8,
     borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   actionRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginBottom: 16,
   },
@@ -241,21 +293,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   saveButton: {
-    backgroundColor: '#34C759',
+    backgroundColor: "#34C759",
   },
   confirmButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
   },
   disabledButton: {
-    backgroundColor: '#999',
+    backgroundColor: "#999",
     opacity: 0.5,
   },
   actionButtonText: {
-    color: '#fff',
+    color: "#fff",
   },
   editContainer: {
     marginBottom: 20,
@@ -271,15 +323,20 @@ const styles = StyleSheet.create({
     minHeight: 200,
     maxHeight: 400,
   },
-  resetButton: {
-    backgroundColor: '#B98110',
-    borderRadius: 8,
-    padding: 14,
-    alignItems: 'center',
+  resetButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
     marginTop: 8,
     marginBottom: 20,
   },
+  resetButton: {
+    backgroundColor: "#B98110",
+    borderRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    alignItems: "center",
+  },
   resetButtonText: {
-    color: '#fff',
+    color: "#fff",
   },
 });
