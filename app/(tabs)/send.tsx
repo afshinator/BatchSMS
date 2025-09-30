@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 
+import MessageSender from "@/components/MessageSender";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -12,6 +13,8 @@ export default function SendMessages() {
   const { pickedDocument, pickedRecipients, pickedMessage } = useStateMgr();
 
   console.log("SEND: ", pickedRecipients, pickedMessage);
+
+  const canSend = pickedDocument && pickedRecipients && pickedMessage;
 
   const Header = () => (
     <ThemedView>
@@ -50,7 +53,7 @@ export default function SendMessages() {
         {!pickedMessage && (
           <ThemedText>
             Go create or select the
-            <Link href="/pickRecipients">
+            <Link href="/pickMessage">
               {" "}
               <ThemedText type="link">message</ThemedText>
             </Link>{" "}
@@ -59,14 +62,12 @@ export default function SendMessages() {
         )}
       </ThemedView>
 
-      <ThemedView style={{ borderRadius: 4,}}>
-        {pickedMessage && (
-          <ThemedView>
-            <ThemedText type="subtitle">Message Template:</ThemedText>
-            <ThemedText style={{   borderRadius: 4, color: 'yellow'}}>{pickedMessage}</ThemedText>
-          </ThemedView>
-        )}
-      </ThemedView>
+      {pickedMessage && (
+        <ThemedView style={styles.messagePreview}>
+          <ThemedText type="subtitle">Message Template:</ThemedText>
+          <ThemedText style={styles.messageText}>{pickedMessage}</ThemedText>
+        </ThemedView>
+      )}
     </ThemedView>
   );
 
@@ -83,6 +84,13 @@ export default function SendMessages() {
       }
     >
       <Header />
+      
+      {canSend && (
+        <MessageSender 
+          recipients={pickedRecipients} 
+          messageTemplate={pickedMessage}
+        />
+      )}
     </ParallaxScrollView>
   );
 }
@@ -96,5 +104,15 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     marginBottom: 16,
+  },
+  messagePreview: {
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    // backgroundColor: '#f0f7ff',
+  },
+  messageText: {
+    marginTop: 8,
+    fontStyle: 'italic',
   },
 });
