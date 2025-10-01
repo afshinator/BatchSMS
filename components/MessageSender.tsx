@@ -270,7 +270,7 @@ export default function MessageSender({ recipients, messageTemplate }: MessageSe
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    
   },
   startButton: {
     backgroundColor: '#007AFF',
@@ -284,7 +284,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   currentRecipientCard: {
-    backgroundColor: '#f0f7ff',
     padding: 20,
     borderRadius: 12,
     marginBottom: 24,
@@ -302,7 +301,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   summaryCard: {
-    backgroundColor: '#e8f5e9',
+ 
     padding: 20,
     borderRadius: 12,
     marginBottom: 24,
@@ -351,11 +350,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e0e0e0',
   },
   statusInfo: {
-    flex: 1,
+    flex: 1, flexDirection: 'row'
   },
   statusName: {
     fontSize: 16,
     fontWeight: '600',
+    width: 110,
   },
   statusPhone: {
     fontSize: 14,

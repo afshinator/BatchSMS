@@ -30,7 +30,7 @@ export default function SendMessages() {
       </ThemedView>
 
       <ThemedView style={{ marginBottom: 16 }}>
-        <ThemedText>Send text messages to all your chosen numbers.</ThemedText>
+        <ThemedText style={{ marginBottom: 16}}>Send text messages to all your chosen numbers.</ThemedText>
         {!pickedDocument && (
           <ThemedText>
             First pick

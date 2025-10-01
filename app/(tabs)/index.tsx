@@ -19,8 +19,13 @@ const NOT_DONE = "⏳";
 const DONE = "✅";
 
 export default function HomeScreen() {
-  const { pickedDocument, documentContents, pickedRecipients, setPhoneTypePref } =
-    useStateMgr();
+  const {
+    pickedDocument,
+    documentContents,
+    pickedRecipients,
+    setPhoneTypePref,
+    pickedMessage,
+  } = useStateMgr();
 
   useEffect(() => {
     const onStartup = async () => {
@@ -70,8 +75,15 @@ export default function HomeScreen() {
 
       <ThemedView style={styles.stepContainer}>
         <Link href="/pickCsv">
-          <ThemedText type="subtitle">
-            Step 1: Pick CSV file {pickedDocument ? DONE : NOT_DONE}
+          <ThemedText
+            type="subtitle"
+            style={[pickedDocument && styles.completedText]}
+          >
+            Step 1: Pick CSV file
+            <ThemedText style={styles.noLineThrough}>
+              {"  "}
+              {pickedDocument && DONE}
+            </ThemedText>
           </ThemedText>
         </Link>
         <ThemedText>
@@ -80,9 +92,20 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
-        <Link href="/pickCsv">
-          <ThemedText type="subtitle">
-            Step 2: Pick Recipeints {pickedRecipients && pickedRecipients?.length > 0 ? DONE : NOT_DONE}
+        <Link href="/pickRecipients">
+          <ThemedText
+            type="subtitle"
+            style={
+              pickedRecipients && [
+                pickedRecipients?.length > 0 && styles.completedText,
+              ]
+            }
+          >
+            Step 2: Pick Recipeints
+            <ThemedText style={styles.noLineThrough}>
+              {"  "}
+              {pickedRecipients && pickedRecipients?.length > 0 && DONE}
+            </ThemedText>
           </ThemedText>
         </Link>
         <ThemedText>
@@ -92,7 +115,16 @@ export default function HomeScreen() {
 
       <ThemedView style={styles.stepContainer}>
         <Link href="/pickMessage">
-          <ThemedText type="subtitle">Step 3: Pick Message</ThemedText>
+          <ThemedText
+            type="subtitle"
+            style={[pickedMessage && styles.completedText]}
+          >
+            Step 3: Pick Message
+            <ThemedText style={styles.noLineThrough}>
+              {"  "}
+              {pickedMessage && DONE}
+            </ThemedText>
+          </ThemedText>
         </Link>
         <ThemedText>
           Create a message to send, or pick a saved message.
@@ -100,38 +132,11 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction
-              title="Action"
-              icon="cube"
-              onPress={() => alert("Action pressed")}
-            />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert("Share pressed")}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert("Delete pressed")}
-              />
-            </Link.Menu>
-          </Link.Menu>
+        <Link href="/send">
+          <ThemedText type="subtitle">Step 4: Send</ThemedText>
         </Link>
-
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
+        <ThemedText>Send your messages</ThemedText>
       </ThemedView>
-
     </ParallaxScrollView>
   );
 }
@@ -154,5 +159,12 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     position: "absolute",
+  },
+  completedText: {
+    textDecorationLine: "line-through",
+    color: "#888",
+  },
+  noLineThrough: {
+    textDecorationLine: "none",
   },
 });
