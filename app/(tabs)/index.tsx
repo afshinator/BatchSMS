@@ -60,7 +60,7 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Batch SMS</ThemedText>
+        <ThemedText type="title">Batch SMS </ThemedText>
         <AnimatedStringWave text="📨" />
       </ThemedView>
 
