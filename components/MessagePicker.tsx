@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useStateMgr } from "@/hooks/use-state-mgr";
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { Link } from "expo-router";
 import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -206,7 +207,10 @@ export default function MessagePicker({
             </TouchableOpacity>
           </ThemedView>
 
-          <ThemedText type="small" style={{ marginBottom: 8, fontWeight: 'bold'}}>
+          <ThemedText
+            type="small"
+            style={{ marginBottom: 8, fontWeight: "bold" }}
+          >
             Use [name] in the text to indicate where to insert name in the
             message when sending.
           </ThemedText>
@@ -239,24 +243,32 @@ export default function MessagePicker({
 
           {/* Reset Pick Button - Only show when message is picked */}
           {isPicked && (
-            <ThemedView
-              style={[
-                styles.resetButtonContainer,
-                { backgroundColor: "transparent" },
-              ]}
-            >
-              <TouchableOpacity
-                style={[styles.resetButton]}
-                onPress={handleResetPick}
-                activeOpacity={0.7}
+            <ThemedView>
+              <ThemedView
+                style={[
+                  styles.resetButtonContainer,
+                  { backgroundColor: "transparent" },
+                ]}
               >
-                <ThemedText
-                  type="defaultSemiBold"
-                  style={styles.resetButtonText}
+                <TouchableOpacity
+                  style={[styles.resetButton]}
+                  onPress={handleResetPick}
+                  activeOpacity={0.7}
                 >
-                  Reset Pick
-                </ThemedText>
-              </TouchableOpacity>
+                  <ThemedText
+                    type="defaultSemiBold"
+                    style={styles.resetButtonText}
+                  >
+                    Reset Pick
+                  </ThemedText>
+                </TouchableOpacity>
+              </ThemedView>
+              <ThemedText style={{ marginTop: 16 }}>
+                👉 Now you can go to{" "}
+                <Link href="/send">
+                  <ThemedText type="link">Send Messages</ThemedText>
+                </Link>
+              </ThemedText>
             </ThemedView>
           )}
         </ThemedView>
